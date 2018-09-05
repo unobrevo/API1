@@ -131,7 +131,7 @@ def main():
 
                         apihash = hmac.new(secret, data.encode('utf-8'), hashlib.sha512).hexdigest()
 
-                        res = requests.post('https://bitbay.net/API/Trading/tradingApi.php',
+                        res = requests.post('https://api.bitbay.net/rest/trading/offer/BTC-PLN',
                                             headers={
                                                 'API-Key': apiKey,
                                                 'API-Hash': apihash,
