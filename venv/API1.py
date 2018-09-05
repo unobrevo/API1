@@ -6,29 +6,6 @@ import hashlib
 import hmac
 
 
-
-
-#funkcja hash
-
-class Api(object):
-    def __init__(self, key, secret):
-        self.key = key
-        self.secret = secret.encode()
-
-    def request(self, method, endpoint):
-        url = URL.build(scheme='https', host='api.bitbay.net', path=endpoint)
-        print(url)
-        with ClientSession().request(method=method, timeout=5, headers=self._sign(url), url=url) as resp_raw:
-            resp = resp_raw.json(content_type=None)
-            return resp
-
-    def _sign(self, url):
-        return {'API-Hash': new(self.secret, url.query_string.encode(), sha512).hexdigest(),
-                'API-Key': self.key}
-
-
-# menu główne
-
 def main():
     while True:
         print("Wybierz operacje do wykonania")
@@ -145,12 +122,27 @@ def main():
                 if prv == 1:
 
                     while True:
-                        api = Api(key='03cb881f-3799-4cde-b2fe-cb84a5b6539f', secret='e0db05ba-4d8b-4a35-ae3f-8f8984400e4c')
-                        url = "https://api.bitbay.net/rest/trading/offer/BTC-PLN"
-                        payload = "{\"amount\":0.45,\"rate\":23000,\"offerType\":\"sell\",\"mode\":\"limit\",\"postOnly\":false,\"hidden\":true,\"fillOrKill\":false}"
-                        response = requests.request("POST", url, data=payload)
+                        secret = "e0db05ba-4d8b-4a35-ae3f-8f8984400e4c"
+                        apiKey = "03cb881f-3799-4cde-b2fe-cb84a5b6539f"
 
-                        print(response.text)
+                        timestamp = int(time.time())
+
+                        data = urllib.parse.urlencode((('method', 'info'), ('moment', timestamp)))
+
+                        apihash = hmac.new(secret, data.encode('utf-8'), hashlib.sha512).hexdigest()
+
+                        res = requests.post('https://bitbay.net/API/Trading/tradingApi.php',
+                                            headers={
+                                                'API-Key': apiKey,
+                                                'API-Hash': apihash,
+                                                'Content-Type': 'application/json'
+                                            },
+                                            data=data
+                                            )
+
+                        print(res)
+                        print(res.text)
+
 
 
             elif wybor==9:
