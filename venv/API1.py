@@ -135,6 +135,8 @@ def main():
                                             headers={
                                                 'API-Key': apiKey,
                                                 'API-Hash': apihash,
+                                                'operation-id': '78539fe0-e9b0-4e4e-8c86-70b36aa93d4f',
+                                                'Request-Timestamp': 1529897422,
                                                 'Content-Type': 'application/json'
                                             },
                                             data=data
